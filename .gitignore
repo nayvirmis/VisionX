@@ -16,6 +16,7 @@ dist/
 build/
 *.zip
 report_render*/
+docs/report_build/
 .idea/
 .vscode/
 backend/instance/

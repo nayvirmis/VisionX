@@ -93,6 +93,8 @@ verified manually before deployment.
 
 ## Documentation
 
+- [Project report (PDF)](docs/VisionX_Project_Report.pdf)
+- [Project report (LaTeX source)](docs/VisionX_Project_Report.tex)
 - [Architecture and data model](docs/ARCHITECTURE.md)
 - [API reference](docs/API.md)
 - [Privacy notice](PRIVACY.md)
