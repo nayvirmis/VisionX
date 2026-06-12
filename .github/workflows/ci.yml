@@ -1,0 +1,85 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: visionx_test
+          POSTGRES_USER: visionx
+          POSTGRES_PASSWORD: visionx
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U visionx -d visionx_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+      redis:
+        image: valkey/valkey:8-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "valkey-cli ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    defaults:
+      run:
+        working-directory: backend
+    env:
+      DATABASE_URL: postgresql+psycopg://visionx:visionx@localhost:5432/visionx_test
+      TEST_DATABASE_URL: postgresql+psycopg://visionx:visionx@localhost:5432/visionx_test
+      JWT_SECRET: test-jwt-secret-that-is-long-enough-for-ci
+      CRON_SECRET: test-cron-secret
+      X_CLIENT_ID: test-client
+      X_CLIENT_SECRET: test-secret
+      X_BEARER_TOKEN: test-bearer
+      X_REDIRECT_URI: http://localhost:5000/api/x/oauth/callback
+      ALLOWED_ORIGINS: chrome-extension://test-extension
+      RATELIMIT_STORAGE_URI: redis://localhost:6379/0
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: backend/requirements*.txt
+      - run: pip install -r requirements-dev.txt
+      - run: ruff check .
+      - run: ruff format --check .
+      - run: alembic upgrade head
+      - run: pytest --cov=app --cov-report=term-missing
+      - run: pip-audit -r requirements.txt -r requirements-dev.txt
+
+  extension:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: extension
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: extension/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm test
+      - run: node -e "JSON.parse(require('fs').readFileSync('manifest.json', 'utf8'))"
+      - run: npm audit --audit-level=high
+      - run: npm run package
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t visionx-api ./backend

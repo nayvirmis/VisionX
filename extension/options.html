@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>VisionX Options</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <main>
+      <div class="brand">
+        <img src="assets/icon-128.png" alt="" />
+        <div>
+          <h1>VisionX Options</h1>
+          <p>Configure the backend used by this extension.</p>
+        </div>
+      </div>
+      <form id="options-form">
+        <label for="api-url">Backend URL</label>
+        <input
+          id="api-url"
+          type="url"
+          placeholder="http://localhost:5000"
+          required
+        />
+        <p class="hint">Use HTTPS for any deployed backend.</p>
+        <button type="submit">Save backend</button>
+      </form>
+      <p id="status" role="status"></p>
+    </main>
+    <script src="options.js"></script>
+  </body>
+</html>

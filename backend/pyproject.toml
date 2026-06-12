@@ -1,0 +1,21 @@
+[project]
+name = "visionx-api"
+version = "2.0.0"
+description = "Backend API for the VisionX public X feed sharing extension"
+requires-python = ">=3.11"
+authors = [{ name = "Suryadeep Singh Deswal" }]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.coverage.run]
+source = ["app"]
+branch = true

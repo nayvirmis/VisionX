@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>VisionX</title>
+    <link rel="stylesheet" href="popup.css?v=2" />
+  </head>
+  <body>
+    <header>
+      <img src="assets/icon-48.png" alt="" />
+      <div>
+        <h1>VisionX</h1>
+        <p>Public feed sharing</p>
+      </div>
+      <button
+        id="open-options"
+        class="icon-button"
+        title="Open options"
+        aria-label="Open options"
+      >
+        &#9881;
+      </button>
+    </header>
+
+    <main>
+      <section id="loading" class="centered">
+        <div class="spinner" aria-hidden="true"></div>
+        <p>Loading VisionX...</p>
+      </section>
+
+      <section id="auth-view" hidden>
+        <div class="tabs" role="tablist">
+          <button id="login-tab" class="tab active" type="button">Login</button>
+          <button id="register-tab" class="tab" type="button">Register</button>
+        </div>
+
+        <form id="login-form">
+          <label
+            >Username<input
+              id="login-username"
+              autocomplete="username"
+              required
+          /></label>
+          <label
+            >Password<input
+              id="login-password"
+              type="password"
+              autocomplete="current-password"
+              required
+          /></label>
+          <button type="submit">Login</button>
+        </form>
+
+        <form id="register-form" hidden>
+          <label
+            >Username<input
+              id="register-username"
+              autocomplete="username"
+              required
+          /></label>
+          <label
+            >Email<input
+              id="register-email"
+              type="email"
+              autocomplete="email"
+              required
+          /></label>
+          <label
+            >Password<input
+              id="register-password"
+              type="password"
+              autocomplete="new-password"
+              required
+          /></label>
+          <label
+            >Confirm password<input
+              id="register-confirm"
+              type="password"
+              autocomplete="new-password"
+              required
+          /></label>
+          <p class="hint">
+            At least 8 characters with uppercase, lowercase, and a number.
+          </p>
+          <button type="submit">Create account</button>
+        </form>
+      </section>
+
+      <section id="dashboard" hidden>
+        <div class="profile-row">
+          <div>
+            <span class="eyebrow">Signed in as</span>
+            <strong id="profile-username"></strong>
+            <span id="profile-email" class="muted"></span>
+          </div>
+          <button id="logout" class="secondary compact" type="button">
+            Logout
+          </button>
+        </div>
+
+        <section class="panel">
+          <div class="section-heading">
+            <div>
+              <h2>X account</h2>
+              <p id="x-account-status" class="muted"></p>
+            </div>
+          </div>
+          <button id="connect-x" type="button">Connect X Account</button>
+          <button id="disconnect-x" class="secondary" type="button" hidden>
+            Disconnect X Account
+          </button>
+        </section>
+
+        <section class="panel">
+          <h2>Share my feed</h2>
+          <form id="share-form" class="inline-form">
+            <input
+              id="share-username"
+              placeholder="VisionX username"
+              required
+            />
+            <button type="submit">Share</button>
+          </form>
+          <h3>People with access</h3>
+          <div id="outgoing-list" class="list"></div>
+        </section>
+
+        <section class="panel">
+          <div class="section-heading">
+            <div>
+              <h2>Feeds shared with me</h2>
+              <p class="muted">Load public posts into the current X tab.</p>
+            </div>
+          </div>
+          <div id="incoming-list" class="list"></div>
+          <button id="restore-feed" class="secondary" type="button">
+            Restore Original Feed
+          </button>
+        </section>
+
+        <details class="danger-zone">
+          <summary>Delete account</summary>
+          <form id="delete-form">
+            <label
+              >Confirm password<input
+                id="delete-password"
+                type="password"
+                required
+            /></label>
+            <button class="danger" type="submit">Delete VisionX account</button>
+          </form>
+        </details>
+      </section>
+
+      <div id="message" role="status" hidden></div>
+    </main>
+    <script src="popup.js"></script>
+  </body>
+</html>

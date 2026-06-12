@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>VisionX Popup Preview</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        background: #dce2e8;
+      }
+
+      iframe {
+        display: block;
+        width: 390px;
+        height: 720px;
+        border: 0;
+        background: white;
+      }
+    </style>
+  </head>
+  <body>
+    <iframe
+      id="preview"
+      src="../popup.html?preview=2"
+      title="VisionX popup"
+    ></iframe>
+    <script>
+      document.getElementById("preview").addEventListener("load", (event) => {
+        const documentRef = event.target.contentDocument;
+        const mode = new URLSearchParams(location.search).get("mode") || "auth";
+        documentRef.getElementById("loading").hidden = true;
+        documentRef.getElementById("auth-view").hidden = mode !== "auth";
+        documentRef.getElementById("dashboard").hidden = mode !== "dashboard";
+        if (mode !== "dashboard") return;
+
+        documentRef.getElementById("profile-username").textContent =
+          "suryadeep";
+        documentRef.getElementById("profile-email").textContent =
+          "suryadeep@example.com";
+        documentRef.getElementById("x-account-status").textContent =
+          "Connected to @suryadeep";
+        documentRef.getElementById("connect-x").hidden = true;
+        documentRef.getElementById("disconnect-x").hidden = false;
+
+        const outgoing = documentRef.getElementById("outgoing-list");
+        const incoming = documentRef.getElementById("incoming-list");
+        outgoing.append(createRow(documentRef, "project_reviewer", "Remove"));
+        incoming.append(
+          createRow(documentRef, "teammate · @public_account", "Load"),
+        );
+      });
+
+      function createRow(documentRef, label, action) {
+        const row = documentRef.createElement("div");
+        row.className = "list-row";
+        const text = documentRef.createElement("span");
+        text.textContent = label;
+        const actions = documentRef.createElement("div");
+        actions.className = "actions";
+        const button = documentRef.createElement("button");
+        button.type = "button";
+        button.textContent = action;
+        actions.append(button);
+        row.append(text, actions);
+        return row;
+      }
+    </script>
+  </body>
+</html>

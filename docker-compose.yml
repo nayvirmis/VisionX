@@ -1,0 +1,41 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: visionx
+      POSTGRES_USER: visionx
+      POSTGRES_PASSWORD: visionx
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U visionx -d visionx"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - visionx_postgres:/var/lib/postgresql/data
+
+  cache:
+    image: valkey/valkey:8-alpine
+    command: ["valkey-server", "--save", "", "--appendonly", "no"]
+    healthcheck:
+      test: ["CMD", "valkey-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    env_file:
+      - ./backend/.env
+    environment:
+      DATABASE_URL: postgresql+psycopg://visionx:visionx@db:5432/visionx
+      RATELIMIT_STORAGE_URI: redis://cache:6379/0
+    ports:
+      - "${VISIONX_PORT:-5000}:5000"
+    depends_on:
+      db:
+        condition: service_healthy
+      cache:
+        condition: service_healthy
+
+volumes:
+  visionx_postgres:
